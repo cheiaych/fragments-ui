@@ -4,11 +4,13 @@
         <meta charset="utf-8"/>
         <title>My First Parcel App</title>
         <link rel="stylesheet" href="styles.css">
-        <script src="fragments-ui.js"></script>
+        <script type="module" src="app.js"></script>
     </head>
     <body>
         <h1>Hello, World!</h1>
         <div><button id="login">Login</button> <button id="logout">Logout</button></div>
-        <div>Hello <span class="username"></span></div>
+        <section hidden id="user">
+            <h2>Hello <span class="username"></span>!</h2>
+        </section>
     </body>
 </html>
