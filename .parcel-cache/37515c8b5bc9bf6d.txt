@@ -3,7 +3,7 @@
 113C:\Users\Jordan\Desktop\School\DPS955\fragments-ui\node_modules\@parcel\source-map\parcel_sourcemap_node\build.rs133077770052610505 0
 83C:\Users\Jordan\Desktop\School\DPS955\fragments-ui\node_modules\css-tree\lib\common133077770053540507 1
 96C:\Users\Jordan\Desktop\School\DPS955\fragments-ui\node_modules\htmlnano\docs\docs\030-config.md133077770045315314 0
-63C:\Users\Jordan\Desktop\School\DPS955\fragments-ui\package.json133077770094072019 0
+63C:\Users\Jordan\Desktop\School\DPS955\fragments-ui\package.json133077795298100761 0
 92C:\Users\Jordan\Desktop\School\DPS955\fragments-ui\node_modules\nth-check\lib\compile.js.map133077770022748282 0
 86C:\Users\Jordan\Desktop\School\DPS955\fragments-ui\node_modules\yaml\browser\scalar.js133077770033958611 0
 82C:\Users\Jordan\Desktop\School\DPS955\fragments-ui\node_modules\lmdb\src\lmdb-js.h133077770052260496 0

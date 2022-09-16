@@ -21,5 +21,8 @@
   "homepage": "https://github.com/jordanhui19/fragments-ui#readme",
   "devDependencies": {
     "parcel": "^2.7.0"
+  },
+  "dependencies": {
+    "aws-amplify": "^4.3.35"
   }
 }
