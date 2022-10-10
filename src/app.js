@@ -1,11 +1,13 @@
 import { Auth, getUser } from './auth';
-import { getUserFragments } from './api';
+import { createFragment, getUserFragments } from './api';
 
 async function init() {
   // Get our UI elements
   const userSection = document.querySelector('#user');
   const loginBtn = document.querySelector('#login');
   const logoutBtn = document.querySelector('#logout');
+  const createFragBtn = document.querySelector('#createFrag');
+  const fragText = document.querySelector('#fragText');
 
   // Wire up event handlers to deal with login and logout.
   loginBtn.onclick = () => {
@@ -39,6 +41,12 @@ async function init() {
 
   // Disable the Login button
   loginBtn.disabled = true;
+
+  createFragBtn.onclick = () => {
+    const fragmentData = fragText.value;
+    console.log(fragmentData);
+    createFragment(user, fragmentData);
+  }
 }
 
 // Wait for the DOM to be ready, then start the app
