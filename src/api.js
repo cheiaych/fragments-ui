@@ -32,8 +32,8 @@ export async function createFragment(user, data) {
     const res = await fetch(`${apiUrl}/v1/fragments`, {
       method: 'POST',
       mode: 'cors',
-      headers: user.authorizationHeaders(),
-      body: data
+      headers: user.authorizationHeaders('text/plain'),
+      body: Buffer.from(data)
     });
     if (!res.ok) {
       throw new Error(`${res.status} ${res.statusText}`);

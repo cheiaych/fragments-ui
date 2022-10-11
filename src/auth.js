@@ -61,7 +61,7 @@ async function getUser() {
       idToken,
       accessToken,
       // Include a simple method to generate headers with our Authorization info
-      authorizationHeaders: (type = 'text/plain') => {
+      authorizationHeaders: (type = 'application/json') => {
         const headers = { 'Content-Type': type };
         headers['Authorization'] = `Bearer ${idToken}`;
         return headers;
