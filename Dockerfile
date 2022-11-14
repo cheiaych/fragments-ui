@@ -1,34 +1,27 @@
-#Instructions for Docker
-
-#Docker image from alpine node version 16.3.16
-FROM node:16-alpine3.16@sha256:2175727cef5cad4020cb77c8c101d56ed41d44fbe9b1157c54f820e3d345eab1
+#Installing Base dependencies
+FROM node:16-alpine3.16@sha256:2175727cef5cad4020cb77c8c101d56ed41d44fbe9b1157c54f820e3d345eab1 AS dependencies
 
 LABEL maintainer = "Jordan Hui <jhui19@myseneca.ca>"
 LABEL description = "Fragments User Interface"
 
-#Default Port
-ENV PORT = 1234
-#Reduce console output from installation within Docker
-ENV NPM_CONFIG_LOGLEVEL = warn
-#Disable color when running within Docker
-ENV NPM_CONFIG_COLOR = false
-#Setting env to production mode
-ENV NODE_ENV = production
+WORKDIR /ui
 
-#Use /UI as working directory
-WORKDIR /UI
-
-#Copies package.json and package-lock.json into curent working directory (/app)
 COPY package*.json ./
+CMD ["npm", "install"]
 
-#Install dependencies from package.json
-RUN npm install
+#Bulding site
+FROM node:16-alpine3.16@sha256:2175727cef5cad4020cb77c8c101d56ed41d44fbe9b1157c54f820e3d345eab1 AS build
 
-#Copy src to /UI/src
-COPY ./src ./src
+WORKDIR /ui
+COPY --from=dependencies /ui /ui
+COPY . .
+CMD ["npm", "build"]
 
-#Start container by running server
-CMD ["npm", "start"]
+#Serving site
+FROM nginx:1.23.2-alpine@sha256:455c39afebd4d98ef26dd70284aa86e6810b0485af5f4f222b19b89758cabf1e AS deploy
 
-#Running on port 1234
-EXPOSE 1234
+COPY --from=build /ui/dist /usr/share/nginx/html
+EXPOSE 80
+
+HEALTHCHECK --interval=15s --timeout=30s --start-period=10s --retries=3 \
+    CMD curl --fail localhost || exist 1

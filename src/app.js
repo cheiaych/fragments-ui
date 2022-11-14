@@ -11,6 +11,8 @@ async function init() {
   const fragFile = document.querySelector('#fragFile');
   const contentType = document.querySelector('#contentType');
 
+  var fileData;
+
   // Wire up event handlers to deal with login and logout.
   loginBtn.onclick = () => {
     // Sign-in via the Amazon Cognito Hosted UI (requires redirects), see:
@@ -32,6 +34,14 @@ async function init() {
   }
   getFragmentsExpanded();
 
+  //Setting up file input
+  fragFile.addEventListener('change', (event) => {
+    readFileData(event.target.files[0], function(e) {
+      console.log(e.target.result)
+      fileData = e.target.result;
+    })
+  })
+
   // Log the user info for debugging purposes
   console.log({ user });
 
@@ -47,18 +57,19 @@ async function init() {
   createFragBtn.onclick = async () => {
     const type = contentType.value;
     var fragmentData;
-    /*if (fragFile != null) {
-      fragmentData = fragFile.value;
+    if (fragFile && fragFile.value) {
+      fragmentData = fileData;
       await createFragment(user, fragmentData, type);
+      getFragmentsExpanded();
     }
-    else if (fragText.value) {*/
+    else if (fragText.value != '') {
       fragmentData = fragText.value;
       await createFragment(user, fragmentData, type);
       getFragmentsExpanded();
-    /*}
+    }
     else {
       alert('Enter text or a file for a fragment')
-    }*/
+    }
   }
 
   async function getFragments() {
@@ -70,6 +81,12 @@ async function init() {
   async function getFragmentsExpanded() {
     const data = await getUserFragmentsExpanded(user);
     console.log('Got expanded fragments ', { data });
+  }
+
+  function readFileData(file, onLoadCallback) {
+    var reader = new FileReader();
+    reader.onload = onLoadCallback;
+    reader.readAsText(file)
   }
 }
 

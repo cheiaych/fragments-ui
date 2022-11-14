@@ -2,11 +2,14 @@
   "name": "fragments-ui",
   "version": "0.0.1",
   "description": "UI for DPS955 Fragments",
-  "main": "index.js",
+  "main": "index.html",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "parcel src/index.html",
-    "build": "parcel build"
+    "build": "parcel build src/index.html"
+  },
+  "targets": { 
+    "main": false 
   },
   "repository": {
     "type": "git",
