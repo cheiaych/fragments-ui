@@ -7,14 +7,25 @@
         <script type="module" src="app.js"></script>
     </head>
     <body>
-        <h1>Hello, World!</h1>
         <div><button id="login">Login</button> <button id="logout">Logout</button></div>
         <section hidden id="user">
             <h2>Hello <span class="username"></span>!</h2>
             <div>
-                <h3>Enter some text for a fragment</h3>
-                <input type="text" id="fragText"/> <button id="createFrag">Create fragment</button>
+                <h3>What type of content is your fragment?</h3>
+                <select id="contentType">
+                    <option value="text/plain">text/plain</option>
+                    <option value="text/markdown">text/markdown</option>
+                    <option value="text/html">text/html</option>
+                    <option value="application/json">application/json</option>
+                </select>
+                <h3>Enter fragment data as either text or a file</h3>
+                <button id="createFrag">Create fragment</button> <br><br>
+                <textarea id="fragText" rows="8" cols="100" placeholder="Enter as text"></textarea><br><br>
+                <label>Upload a file:</label> <input type="file" id="fragFile"/>
             </div>
+
+            <h2>Your Fragments</h2>
+            <div id="userFragments"></div>
         </section>
     </body>
 </html>

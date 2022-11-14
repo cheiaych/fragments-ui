@@ -1,5 +1,5 @@
 import { Auth, getUser } from './auth';
-import { createFragment, getUserFragments } from './api';
+import { createFragment, getUserFragments, getUserFragmentsExpanded, getUserFragmentByID } from './api';
 
 async function init() {
   // Get our UI elements
@@ -8,6 +8,8 @@ async function init() {
   const logoutBtn = document.querySelector('#logout');
   const createFragBtn = document.querySelector('#createFrag');
   const fragText = document.querySelector('#fragText');
+  const fragFile = document.querySelector('#fragFile');
+  const contentType = document.querySelector('#contentType');
 
   // Wire up event handlers to deal with login and logout.
   loginBtn.onclick = () => {
@@ -28,7 +30,7 @@ async function init() {
     logoutBtn.disabled = true;
     return;
   }
-  getUserFragments(user);
+  getFragmentsExpanded();
 
   // Log the user info for debugging purposes
   console.log({ user });
@@ -42,10 +44,32 @@ async function init() {
   // Disable the Login button
   loginBtn.disabled = true;
 
-  createFragBtn.onclick = () => {
-    const fragmentData = fragText.value;
-    console.log(fragmentData);
-    createFragment(user, fragmentData);
+  createFragBtn.onclick = async () => {
+    const type = contentType.value;
+    var fragmentData;
+    /*if (fragFile != null) {
+      fragmentData = fragFile.value;
+      await createFragment(user, fragmentData, type);
+    }
+    else if (fragText.value) {*/
+      fragmentData = fragText.value;
+      await createFragment(user, fragmentData, type);
+      getFragmentsExpanded();
+    /*}
+    else {
+      alert('Enter text or a file for a fragment')
+    }*/
+  }
+
+  async function getFragments() {
+    const data = await getUserFragments(user)
+    console.log('Got fragments ', { data });
+    console.log(data['fragments'])
+  }
+
+  async function getFragmentsExpanded() {
+    const data = await getUserFragmentsExpanded(user);
+    console.log('Got expanded fragments ', { data });
   }
 }
 
