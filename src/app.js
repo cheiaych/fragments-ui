@@ -83,6 +83,16 @@ async function init() {
     console.log('Got expanded fragments ', { data });
   }
 
+  async function getUserFragmentByID(id) {
+    const data = await getUserFragmentByID(user, id);
+    console.log('Got data ', { data });
+  }
+
+  /*async function createFragment(fragmentData, type) {
+    const data = await postFragment(user, fragmentData, type);
+    console.log('POST response: ', { data });
+  }*/
+
   function readFileData(file, onLoadCallback) {
     var reader = new FileReader();
     reader.onload = onLoadCallback;
