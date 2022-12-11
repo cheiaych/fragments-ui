@@ -1,3 +1,12 @@
 h1 {
     color: blue
 }
+
+table, tr, td {
+    border: 1px solid black;
+}
+
+td {
+    padding: 5px 10px 5px 10px;
+    text-align: center;
+}

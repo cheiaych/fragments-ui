@@ -8,8 +8,8 @@
     "start": "parcel src/index.html",
     "build": "parcel build src/index.html"
   },
-  "targets": { 
-    "main": false 
+  "targets": {
+    "main": false
   },
   "repository": {
     "type": "git",
@@ -23,11 +23,16 @@
   },
   "homepage": "https://github.com/jordanhui19/fragments-ui#readme",
   "devDependencies": {
+    "os-browserify": "^0.3.0",
     "parcel": "^2.7.0",
+    "path-browserify": "^1.0.1",
     "process": "^0.11.10",
-    "querystring-es3": "^0.2.1"
+    "querystring-es3": "^0.2.1",
+    "stream-browserify": "^3.0.0",
+    "util": "^0.12.5"
   },
   "dependencies": {
-    "aws-amplify": "^4.3.35"
+    "aws-amplify": "^4.3.35",
+    "sharp": "^0.31.2"
   }
 }
