@@ -75,10 +75,28 @@ export async function getUserFragmentByID(user, id) {
     if (!res.ok) {
       throw new Error(`${res.status} ${res.statusText}`);
     }
-    const data = res.text();
+    const data = res.arrayBuffer();
     return data;
   } catch (err) {
     console.error('Unable to call GET /v1/fragments/' + id, { err });
+    return err;
+  }
+}
+
+export async function getUserFragmentByIDConvert(user, id, ext) {
+  console.log('Requesting user fragment data from ' + `${apiUrl}/v1/fragments/${id}.${ext}` + '...');
+  try {
+    const res = await fetch(`${apiUrl}/v1/fragments/${id}.${ext}`, {
+      // Generate headers with the proper Authorization bearer token to pass
+      headers: user.authorizationHeaders(),
+    });
+    if (!res.ok) {
+      throw new Error(`${res.status} ${res.statusText}`);
+    }
+    const data = res.arrayBuffer();
+    return data;
+  } catch (err) {
+    console.error('Unable to call GET /v1/fragments/' + id + '.' + ext, { err });
     return err;
   }
 }

@@ -1,8 +1,21 @@
 import { Auth, getUser } from './auth';
-import { createFragment, getUserFragments, getUserFragmentsExpanded, getUserFragmentByID, deleteUserFragment, updateUserFragment } from './api';
+import { createFragment, getUserFragments, getUserFragmentsExpanded, getUserFragmentByID, deleteUserFragment, updateUserFragment, getUserFragmentByIDConvert } from './api';
+import { isEmpty } from '@aws-amplify/core';
 //import sharp from 'Sharp'
 
 async function init() {
+  const textTypes = [
+    `txt`,
+    `json`,
+    `md`,
+    `html`,
+  ];
+  const imageTypes = [
+    `png`,
+    `jpg`,
+    `webp`,
+    `gif`,
+  ];
   // Get our UI elements
   const userSection = document.querySelector('#user');
   const loginBtn = document.querySelector('#login');
@@ -11,8 +24,11 @@ async function init() {
   const fragText = document.querySelector('#fragText');
   const fragFile = document.querySelector('#fragFile');
   const contentType = document.querySelector('#contentType');
+  const removeUpload = document.querySelector('#removeUpload')
 
   const userFrags = document.querySelector('#userFragments');
+
+  const testImg = document.querySelector('#testImg')
 
   var fileData;
 
@@ -39,18 +55,11 @@ async function init() {
 
   //Setting up file input
   fragFile.addEventListener('change', (event) => {
+    //console.log(event.target.files[0])
     const fileType = event.target.files[0].type;
     readFileData(event.target.files[0], function(e) {
-      //console.log(e.target.result)
       fileData = e.target.result;
-
-      /*var tempbuffer = Buffer.from(fileData);
-      console.log(tempbuffer)
-      testImg.src = URL.createObjectURL(new Blob([tempbuffer.buffer], {type: fileType}));*/
-
-      /*var tempbuffer = new Uint8Array(Buffer.from(fileData));
-      console.log(Buffer.from(tempbuffer).toString('base64'));
-      testImg.src = `${`data:${fileType};base64,${tempbuffer}`}`*/
+      console.log(fileData)
     })
   })
 
@@ -82,6 +91,14 @@ async function init() {
     else {
       alert('Enter text or a file for a fragment')
     }
+    fragText.value = '';
+    fragFile.value = null;
+    fragmentData = null;
+  }
+
+  removeUpload.onclick = async () => {
+    fragFile.value = null;
+    fragmentData = null;
   }
 
   async function getFragments() {
@@ -94,46 +111,90 @@ async function init() {
     const data = await getUserFragmentsExpanded(user);
     console.log('Got expanded fragments ', { data });
 
-    var html = '<table>';
+    var html = '<table><tr><th>ID</th><th>Content-Type</th><th>Content</th><th>Delete</th><th>Update</th><th>Convert</th></tr>';
     for (var i = 0; i < data.fragments.length; i++) {
-      html += `<tr>${await getFragmentByID(data.fragments[i].id)}</tr>`
+      html += `<tr>${await getFragmentByID(data.fragments[i].id, data.fragments[i].type)}</tr>`
     }
     html += '</table>'
     userFrags.innerHTML = html;
 
     //Appending buttons to table
     for (var i = 0; i < data.fragments.length; i++) {
+      var id = data.fragments[i].id;
+      var type = data.fragments[i].type;
       //Delete Button
       var deleteBtn = document.createElement('button');
-      var id = data.fragments[i].id
       deleteBtn.innerHTML = 'Delete';
       deleteBtn.onclick = function() {
         console.log(`Deleting ${id}`)
         deleteFragment(id);
         getFragmentsExpanded();
       }
-      var deleteButton = document.querySelector(`#delete-${data.fragments[i].id}`);
+      var deleteButton = document.querySelector(`#delete-${id}`);
       deleteButton.appendChild(deleteBtn);
 
       //Update Button
       var updateBtn = document.createElement('button');
-      var id = data.fragments[i].id
       updateBtn.innerHTML = 'Update';
       updateBtn.onclick = function() {
         console.log(`Updating ${id}`)
         updateFragment(id);
         getFragmentsExpanded();
       }
-      var updateButton = document.querySelector(`#update-${data.fragments[i].id}`);
+      var updateButton = document.querySelector(`#update-${id}`);
       updateButton.appendChild(updateBtn);
+
+      //Convert Dropdown and button
+      var convertSelect = document.createElement('select');
+      convertSelect.id = `convertSelect-${id}`
+      if (type.includes('text') || type == 'application/json') {
+        for (var j = 0; j < textTypes.length; j++) {
+          var option = document.createElement('option');
+          option.value = textTypes[j];
+          option.text = textTypes[j];
+          convertSelect.appendChild(option)
+        }
+      }
+      else if (type.includes('image')) {
+        for (var j = 0; j < imageTypes.length; j++) {
+          var option = document.createElement('option');
+          option.value = imageTypes[j];
+          option.text = imageTypes[j];
+          convertSelect.appendChild(option)
+        }
+      }
+
+      var convertBtn = document.createElement('button');
+      convertBtn.innerHTML = 'Convert';
+      convertBtn.onclick = function() {
+        var ext = document.querySelector(`#convertSelect-${id}`).value;
+        console.log(`Converting fragment ${id} to type ${ext}`);
+        convertFragment(id, type, ext);
+      }
+
+      var convert = document.querySelector(`#convert-${data.fragments[i].id}`);
+      convert.appendChild(convertSelect);
+      convert.appendChild(convertBtn)
     }
   }
 
-  async function getFragmentByID(id) {
+  async function getFragmentByID(id, type) {
     const data = await getUserFragmentByID(user, id);
     console.log('Got data ', { data });
 
-    return `<td>${id}</td><td>${data}</td><td id='delete-${id}'></td><td id='update-${id}'></td>`
+    var processedData;
+    if (type.includes('text') || type == 'application/json') {
+      processedData = `<xmp>${Buffer.from(data).toString('utf8')}</xmp>`
+      console.log(processedData);
+    }
+    else if (type.includes('image')) {
+      console.log(data)
+      var imgString = Buffer.from(data).toString('base64');
+      console.log(imgString);
+      processedData = `<img src='${`data:${type};base64,${imgString}`}'>`
+    }
+
+    return `<td>${id}</td><td>${type}</td><td>${processedData}</td><td id='delete-${id}'></td><td id='update-${id}'></td><td id='convert-${id}'></td>`
   }
 
   async function deleteFragment(id) {
@@ -157,6 +218,30 @@ async function init() {
     else {
       alert('Enter text or a file for a fragment')
     }
+    fragText.value = '';
+    fragFile.value = null;
+    fragmentData = null;
+  }
+
+  async function convertFragment(id, type, ext) {
+    const data = await getUserFragmentByIDConvert(user, id, ext)
+    console.log('Got converted data ', { data });
+    var processedData;
+    if (type.includes('text') || type == 'application/json') {
+      processedData = `<xmp>${Buffer.from(data).toString('utf8')}</xmp>`
+      console.log(processedData);
+      var w = window.open("");
+      w.document.write(processedData);
+    }
+
+    else if (type.includes('image')) {
+      var imgString = Buffer.from(data).toString('base64');
+      console.log(imgString);
+      var image = new Image()
+      image.src = `${`data:${type};base64,${imgString}`}`
+      var w = window.open("");
+      w.document.write(image.outerHTML);
+    }
   }
 
   /*async function createFragment(fragmentData, type) {
@@ -167,7 +252,7 @@ async function init() {
   function readFileData(file, onLoadCallback) {
     var reader = new FileReader();
     reader.onload = onLoadCallback;
-    reader.readAsText(file)
+    reader.readAsArrayBuffer(file)
   }
 }
 

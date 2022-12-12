@@ -17,16 +17,19 @@
                     <option value="text/markdown">text/markdown</option>
                     <option value="text/html">text/html</option>
                     <option value="application/json">application/json</option>
+                    <option value="image/png">image/png</option>
+                    <option value="image/jpeg">image/jpeg</option>
+                    <option value="image/webp">image/webp</option>
+                    <option value="image/gif">image/gif</option>
                 </select>
                 <h3>Enter fragment data as either text or a file</h3>
                 <button id="createFrag">Create fragment</button> <br><br>
                 <textarea id="fragText" rows="8" cols="100" placeholder="Enter as text"></textarea><br><br>
-                <label>Upload a file:</label> <input type="file" id="fragFile"/>
+                <label>Upload a file:</label> <input type="file" id="fragFile"/><button id="removeUpload">Remove Upload</button>
             </div>
 
             <h2>Your Fragments</h2>
             <div id="userFragments"></div>
-
         </section>
     </body>
 </html>
