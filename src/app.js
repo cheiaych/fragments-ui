@@ -129,9 +129,9 @@ async function init() {
     //Delete Button
     var deleteBtn = document.createElement('button');
     deleteBtn.innerHTML = 'Delete';
-    deleteBtn.onclick = function() {
+    deleteBtn.onclick = async function() {
       console.log(`Deleting ${id}`)
-      deleteFragment(id);
+      await deleteFragment(id);
       getFragmentsExpanded();
     }
     var deleteButton = document.querySelector(`#delete-${id}`);
@@ -140,9 +140,9 @@ async function init() {
     //Update Button
     var updateBtn = document.createElement('button');
     updateBtn.innerHTML = 'Update';
-    updateBtn.onclick = function() {
+    updateBtn.onclick = async function() {
       console.log(`Updating ${id}`)
-      updateFragment(id);
+      await updateFragment(id);
       getFragmentsExpanded();
     }
     var updateButton = document.querySelector(`#update-${id}`);
@@ -170,10 +170,10 @@ async function init() {
 
     var convertBtn = document.createElement('button');
     convertBtn.innerHTML = 'Convert';
-    convertBtn.onclick = function() {
+    convertBtn.onclick = async function() {
       var ext = document.querySelector(`#convertSelect-${id}`).value;
       console.log(`Converting fragment ${id} to type ${ext}`);
-      convertFragment(id, type, ext);
+      await convertFragment(id, type, ext);
     }
 
     var convert = document.querySelector(`#convert-${id}`);
