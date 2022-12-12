@@ -93,6 +93,7 @@ export async function getUserFragmentByIDConvert(user, id, ext) {
     if (!res.ok) {
       throw new Error(`${res.status} ${res.statusText}`);
     }
+    console.log(`Converted to type ${res.headers.get('Content-Type')}`);
     const data = res.arrayBuffer();
     return data;
   } catch (err) {

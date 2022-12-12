@@ -120,62 +120,65 @@ async function init() {
 
     //Appending buttons to table
     for (var i = 0; i < data.fragments.length; i++) {
-      var id = data.fragments[i].id;
-      var type = data.fragments[i].type;
-      //Delete Button
-      var deleteBtn = document.createElement('button');
-      deleteBtn.innerHTML = 'Delete';
-      deleteBtn.onclick = function() {
-        console.log(`Deleting ${id}`)
-        deleteFragment(id);
-        getFragmentsExpanded();
-      }
-      var deleteButton = document.querySelector(`#delete-${id}`);
-      deleteButton.appendChild(deleteBtn);
-
-      //Update Button
-      var updateBtn = document.createElement('button');
-      updateBtn.innerHTML = 'Update';
-      updateBtn.onclick = function() {
-        console.log(`Updating ${id}`)
-        updateFragment(id);
-        getFragmentsExpanded();
-      }
-      var updateButton = document.querySelector(`#update-${id}`);
-      updateButton.appendChild(updateBtn);
-
-      //Convert Dropdown and button
-      var convertSelect = document.createElement('select');
-      convertSelect.id = `convertSelect-${id}`
-      if (type.includes('text') || type == 'application/json') {
-        for (var j = 0; j < textTypes.length; j++) {
-          var option = document.createElement('option');
-          option.value = textTypes[j];
-          option.text = textTypes[j];
-          convertSelect.appendChild(option)
-        }
-      }
-      else if (type.includes('image')) {
-        for (var j = 0; j < imageTypes.length; j++) {
-          var option = document.createElement('option');
-          option.value = imageTypes[j];
-          option.text = imageTypes[j];
-          convertSelect.appendChild(option)
-        }
-      }
-
-      var convertBtn = document.createElement('button');
-      convertBtn.innerHTML = 'Convert';
-      convertBtn.onclick = function() {
-        var ext = document.querySelector(`#convertSelect-${id}`).value;
-        console.log(`Converting fragment ${id} to type ${ext}`);
-        convertFragment(id, type, ext);
-      }
-
-      var convert = document.querySelector(`#convert-${data.fragments[i].id}`);
-      convert.appendChild(convertSelect);
-      convert.appendChild(convertBtn)
+      generateButtons(data.fragments[i].id, data.fragments[i].type);
     }
+  }
+
+  //Generates delete, update, and convert buttons
+  function generateButtons (id, type) {
+    //Delete Button
+    var deleteBtn = document.createElement('button');
+    deleteBtn.innerHTML = 'Delete';
+    deleteBtn.onclick = function() {
+      console.log(`Deleting ${id}`)
+      deleteFragment(id);
+      getFragmentsExpanded();
+    }
+    var deleteButton = document.querySelector(`#delete-${id}`);
+    deleteButton.appendChild(deleteBtn);
+
+    //Update Button
+    var updateBtn = document.createElement('button');
+    updateBtn.innerHTML = 'Update';
+    updateBtn.onclick = function() {
+      console.log(`Updating ${id}`)
+      updateFragment(id);
+      getFragmentsExpanded();
+    }
+    var updateButton = document.querySelector(`#update-${id}`);
+    updateButton.appendChild(updateBtn);
+
+    //Convert Dropdown and button
+    var convertSelect = document.createElement('select');
+    convertSelect.id = `convertSelect-${id}`
+    if (type.includes('text') || type == 'application/json') {
+      for (var j = 0; j < textTypes.length; j++) {
+        var option = document.createElement('option');
+        option.value = textTypes[j];
+        option.text = textTypes[j];
+        convertSelect.appendChild(option)
+      }
+    }
+    else if (type.includes('image')) {
+      for (var j = 0; j < imageTypes.length; j++) {
+        var option = document.createElement('option');
+        option.value = imageTypes[j];
+        option.text = imageTypes[j];
+        convertSelect.appendChild(option)
+      }
+    }
+
+    var convertBtn = document.createElement('button');
+    convertBtn.innerHTML = 'Convert';
+    convertBtn.onclick = function() {
+      var ext = document.querySelector(`#convertSelect-${id}`).value;
+      console.log(`Converting fragment ${id} to type ${ext}`);
+      convertFragment(id, type, ext);
+    }
+
+    var convert = document.querySelector(`#convert-${id}`);
+    convert.appendChild(convertSelect);
+    convert.appendChild(convertBtn)
   }
 
   async function getFragmentByID(id, type) {
@@ -225,7 +228,7 @@ async function init() {
 
   async function convertFragment(id, type, ext) {
     const data = await getUserFragmentByIDConvert(user, id, ext)
-    console.log('Got converted data ', { data });
+    console.log(`Got converted data `, { data });
     var processedData;
     if (type.includes('text') || type == 'application/json') {
       processedData = `<xmp>${Buffer.from(data).toString('utf8')}</xmp>`
