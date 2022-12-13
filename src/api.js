@@ -94,7 +94,7 @@ export async function getUserFragmentByIDConvert(user, id, ext) {
       throw new Error(`${res.status} ${res.statusText}`);
     }
     console.log(`Converted to type ${res.headers.get('Content-Type')}`);
-    const data = res.arrayBuffer();
+    const data = res;
     return data;
   } catch (err) {
     console.error('Unable to call GET /v1/fragments/' + id + '.' + ext, { err });

@@ -227,21 +227,23 @@ async function init() {
   }
 
   async function convertFragment(id, type, ext) {
-    const data = await getUserFragmentByIDConvert(user, id, ext)
+    const res = await getUserFragmentByIDConvert(user, id, ext)
+    const data = await res.arrayBuffer();
+    const newType = res.headers.get('Content-Type')
     console.log(`Got converted data `, { data });
     var processedData;
-    if (type.includes('text') || type == 'application/json') {
+    if (newType.includes('text') || newType == 'application/json') {
       processedData = `<xmp>${Buffer.from(data).toString('utf8')}</xmp>`
-      console.log(processedData);
+      //console.log(processedData);
       var w = window.open("");
       w.document.write(processedData);
     }
 
-    else if (type.includes('image')) {
+    else if (newType.includes('image')) {
       var imgString = Buffer.from(data).toString('base64');
-      console.log(imgString);
+      //console.log(imgString);
       var image = new Image()
-      image.src = `${`data:${type};base64,${imgString}`}`
+      image.src = `${`data:${newType};base64,${imgString}`}`
       var w = window.open("");
       w.document.write(image.outerHTML);
     }
